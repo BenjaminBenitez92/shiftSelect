@@ -20,9 +20,9 @@ const shiftSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  schedule: {
+  hospital: {
     type: Schema.Types.ObjectId,
-    ref: 'Schedule',
+    ref: 'hospital',
     required: true
   },
 

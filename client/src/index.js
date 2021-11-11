@@ -1,12 +1,16 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM, { render } from 'react-dom';
 import './index.css';
+import './components/Calendar/App.css';
 import App from './App';
+import Calendar from './components/Calendar/Calendar';
+
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
+    <Calendar />
   </React.StrictMode>,
   document.getElementById('root')
 );

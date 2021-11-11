@@ -10,7 +10,7 @@ import * as serviceWorker from './serviceWorker';
 ReactDOM.render(
   <React.StrictMode>
     <App />
-    <Calendar />
+    {/* <Calendar /> */}
   </React.StrictMode>,
   document.getElementById('root')
 );

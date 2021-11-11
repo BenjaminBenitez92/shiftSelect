@@ -1,13 +1,40 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+
 import Home from './pages/Home';
-import Matchup from './pages/Matchup';
-import Vote from './pages/Vote';
-import NotFound from './pages/NotFound';
+import Detail from './pages/Detail';
+import NoMatch from './pages/NoMatch';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Nav from './components/Nav';
+import { StoreProvider } from './utils/GlobalState';
+import Success from './pages/Success';
+import OrderHistory from './pages/OrderHistory';
+import Calendar from './components/Calendar/Calendar'
+
+const httpLink = createHttpLink({
+  uri: '/graphql',
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('id_token');
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
 
 const client = new ApolloClient({
-  uri: '/graphql',
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 
@@ -15,21 +42,20 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
-        <div className="flex-column justify-center align-center min-100-vh bg-primary">
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route exact path="/matchup">
-              <Matchup />
-            </Route>
-            <Route exact path="/matchup/:id">
-              <Vote />
-            </Route>
-            <Route>
-              <NotFound />
-            </Route>
-          </Switch>
+        <div>
+          <StoreProvider>
+            <Nav />
+            <Calendar />
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/signup" component={Signup} />
+              <Route exact path="/success" component={Success} />
+              <Route exact path="/orderHistory" component={OrderHistory} />
+              <Route exact path="/products/:id" component={Detail} />
+              <Route component={NoMatch} />
+            </Switch>
+          </StoreProvider>
         </div>
       </Router>
     </ApolloProvider>

@@ -1,18 +1,18 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { User, Product, Category, Order } = require('../models');
+const { User, Shift, Schedule, Hospital } = require('../models');
 const { signToken } = require('../utils/auth');
 const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc');
 
 const resolvers = {
   Query: {
-    categories: async () => {
-      return await Category.find();
+    hospitals: async () => {
+      return await Hospital.find();
     },
-    products: async (parent, { category, name }) => {
+    shifts: async (parent, { hospital, name }) => {
       const params = {};
 
-      if (category) {
-        params.category = category;
+      if (hospital) {
+        params.hospital = hospital;
       }
 
       if (name) {
@@ -21,73 +21,73 @@ const resolvers = {
         };
       }
 
-      return await Product.find(params).populate('category');
+      return await Shift.find(params).populate('hospital');
     },
-    product: async (parent, { _id }) => {
-      return await Product.findById(_id).populate('category');
+    shift: async (parent, { _id }) => {
+      return await Shift.findById(_id).populate('hospital');
     },
     user: async (parent, args, context) => {
       if (context.user) {
         const user = await User.findById(context.user._id).populate({
-          path: 'orders.products',
-          populate: 'category'
+          path: 'schedules.shift',
+          populate: 'hospital'
         });
 
-        user.orders.sort((a, b) => b.purchaseDate - a.purchaseDate);
+        user.schedules.sort((a, b) => b.purchaseDate - a.purchaseDate);
 
         return user;
       }
 
       throw new AuthenticationError('Not logged in');
     },
-    order: async (parent, { _id }, context) => {
+    schedule: async (parent, { _id }, context) => {
       if (context.user) {
         const user = await User.findById(context.user._id).populate({
-          path: 'orders.products',
-          populate: 'category'
+          path: 'schedules.shifts',
+          populate: 'hospital'
         });
 
-        return user.orders.id(_id);
+        return user.schedules.id(_id);
       }
 
       throw new AuthenticationError('Not logged in');
     },
-    checkout: async (parent, args, context) => {
-      const url = new URL(context.headers.referer).origin;
-      const order = new Order({ products: args.products });
-      const line_items = [];
+    // checkout: async (parent, args, context) => {
+    //   const url = new URL(context.headers.referer).origin;
+    //   const order = new Order({ shifts: args.shifts });
+    //   const line_items = [];
 
-      const { products } = await order.populate('products').execPopulate();
+    //   const { shifts } = await order.populate('shifts').execPopulate();
 
-      for (let i = 0; i < products.length; i++) {
-        const product = await stripe.products.create({
-          name: products[i].name,
-          description: products[i].description,
-          images: [`${url}/images/${products[i].image}`]
-        });
+    //   for (let i = 0; i < shifts.length; i++) {
+    //     const shift = await stripe.shifts.create({
+    //       name: shifts[i].name,
+    //       description: shifts[i].description,
+    //       images: [`${url}/images/${shifts[i].image}`]
+    //     });
 
-        const price = await stripe.prices.create({
-          product: product.id,
-          unit_amount: products[i].price * 100,
-          currency: 'usd',
-        });
+    //     const price = await stripe.prices.create({
+    //       shift: shift.id,
+    //       unit_amount: shift[i].price * 100,
+    //       currency: 'usd',
+    //     });
 
-        line_items.push({
-          price: price.id,
-          quantity: 1
-        });
-      }
+    //     line_items.push({
+    //       price: price.id,
+    //       quantity: 1
+    //     });
+    //   }
 
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items,
-        mode: 'payment',
-        success_url: `${url}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${url}/`
-      });
+    //   const session = await stripe.checkout.sessions.create({
+    //     payment_method_types: ['card'],
+    //     line_items,
+    //     mode: 'payment',
+    //     success_url: `${url}/success?session_id={CHECKOUT_SESSION_ID}`,
+    //     cancel_url: `${url}/`
+    //   });
 
-      return { session: session.id };
-    }
+    //   return { session: session.id };
+    // }
   },
   Mutation: {
     addUser: async (parent, args) => {
@@ -96,14 +96,14 @@ const resolvers = {
 
       return { token, user };
     },
-    addOrder: async (parent, { products }, context) => {
+    addSchedule: async (parent, { shifts }, context) => {
       console.log(context);
       if (context.user) {
-        const order = new Order({ products });
+        const schedule = new Schedule({ shifts });
 
-        await User.findByIdAndUpdate(context.user._id, { $push: { orders: order } });
+        await User.findByIdAndUpdate(context.user._id, { $push: { schedules: schedule } });
 
-        return order;
+        return schedule;
       }
 
       throw new AuthenticationError('Not logged in');
@@ -115,10 +115,10 @@ const resolvers = {
 
       throw new AuthenticationError('Not logged in');
     },
-    updateProduct: async (parent, { _id, quantity }) => {
+    updateShift: async (parent, { _id, quantity }) => {
       const decrement = Math.abs(quantity) * -1;
 
-      return await Product.findByIdAndUpdate(_id, { $inc: { quantity: decrement } }, { new: true });
+      return await Shift.findByIdAndUpdate(_id, { $inc: { quantity: decrement } }, { new: true });
     },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });

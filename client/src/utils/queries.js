@@ -16,8 +16,8 @@ export const QUERY_SHIFTS = gql`
 `;
 
 // export const QUERY_CHECKOUT = gql`
-//   query getCheckout($products: [ID]!) {
-//     checkout(products: $products) {
+//   query getCheckout($shifts: [ID]!) {
+//     checkout(shifts: $shifts) {
 //       session
 //     }
 //   }

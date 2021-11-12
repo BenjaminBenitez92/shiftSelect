@@ -5,12 +5,12 @@ import { useQuery } from '@apollo/client';
 import Cart from '../components/Cart';
 import { useStoreContext } from '../utils/GlobalState';
 import {
-  REMOVE_FROM_CART,
-  UPDATE_CART_QUANTITY,
-  ADD_TO_CART,
-  UPDATE_PRODUCTS,
+  REMOVE_FROM_CALENDAR,
+  UPDATE_CALENDAR_QUANTITY,
+  ADD_TO_CALENDAR,
+  UPDATE_SHIFTS,
 } from '../utils/actions';
-import { QUERY_PRODUCTS } from '../utils/queries';
+import { QUERY_SHIFTS } from '../utils/queries';
 import { idbPromise } from '../utils/helpers';
 import spinner from '../assets/spinner.gif';
 
@@ -20,7 +20,7 @@ function Detail() {
 
   const [currentProduct, setCurrentProduct] = useState({});
 
-  const { loading, data } = useQuery(QUERY_PRODUCTS);
+  const { loading, data } = useQuery(QUERY_SHIFTS);
 
   const { products, cart } = state;
 
@@ -32,7 +32,7 @@ function Detail() {
     // retrieved from server
     else if (data) {
       dispatch({
-        type: UPDATE_PRODUCTS,
+        type: UPDATE_SHIFTS,
         products: data.products,
       });
 
@@ -44,7 +44,7 @@ function Detail() {
     else if (!loading) {
       idbPromise('products', 'get').then((indexedProducts) => {
         dispatch({
-          type: UPDATE_PRODUCTS,
+          type: UPDATE_SHIFTS,
           products: indexedProducts,
         });
       });
@@ -55,7 +55,7 @@ function Detail() {
     const itemInCart = cart.find((cartItem) => cartItem._id === id);
     if (itemInCart) {
       dispatch({
-        type: UPDATE_CART_QUANTITY,
+        type: UPDATE_CALENDAR_QUANTITY,
         _id: id,
         purchaseQuantity: parseInt(itemInCart.purchaseQuantity) + 1,
       });
@@ -65,7 +65,7 @@ function Detail() {
       });
     } else {
       dispatch({
-        type: ADD_TO_CART,
+        type: ADD_TO_CALENDAR,
         product: { ...currentProduct, purchaseQuantity: 1 },
       });
       idbPromise('cart', 'put', { ...currentProduct, purchaseQuantity: 1 });
@@ -74,7 +74,7 @@ function Detail() {
 
   const removeFromCart = () => {
     dispatch({
-      type: REMOVE_FROM_CART,
+      type: REMOVE_FROM_CALENDAR,
       _id: currentProduct._id,
     });
 

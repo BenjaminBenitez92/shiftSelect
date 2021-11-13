@@ -61,7 +61,7 @@ db.once('open', async () => {
       quantity: 4
     },
     {
-      name: 'Da7 7a-7p',
+      name: 'Day 7a-7p',
       description:'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.',
       hours: '12.00',
       hospital: hospitals[2]._id,

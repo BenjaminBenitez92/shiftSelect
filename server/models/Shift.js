@@ -17,8 +17,7 @@ const shiftSchema = new Schema({
     default: 8
   },
   shiftDate: {
-    type: Date,
-    default: Date.now
+    type: String
   },
   quantity: {
     type: Number

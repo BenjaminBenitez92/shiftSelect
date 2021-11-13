@@ -25,7 +25,7 @@ const shiftSchema = new Schema({
   },
   hospital: {
     type: Schema.Types.ObjectId,
-    ref: 'hospital',
+    ref: 'Hospital',
     required: true
   },
 

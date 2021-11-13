@@ -53,6 +53,7 @@ function ProductList() {
               key={shift._id}
               _id={shift._id}
               name={shift.name}
+              shiftDate={shift.shiftDate}
               hours={shift.hours}
               quantity={shift.quantity}
             />

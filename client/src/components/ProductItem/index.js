@@ -9,11 +9,11 @@ function ProductItem(item) {
   const [state, dispatch] = useStoreContext();
 
   const {
-    image,
+  
     name,
     _id,
-    price,
-    quantity
+    hours,
+    shiftDate
   } = item;
 
   const { cart } = state
@@ -42,14 +42,16 @@ function ProductItem(item) {
   return (
     <div className="card px-1 py-1">
       <Link to={`/shift/${_id}`}>
-        <p>{name}</p>
+        <p> {name} </p>
 
       </Link>
       <div>
-        <div>{quantity} {pluralize("item", quantity)} in stock</div>
-        <span>${price}</span>
+        <div>Length of time: {hours} hrs</div>
       </div>
-      <button onClick={addToCart}>Add to cart</button>
+      <div>
+        <div>At: {shiftDate} </div>
+      </div>
+      <button onClick={addToCart}>Add Shift</button>
     </div>
   );
 }

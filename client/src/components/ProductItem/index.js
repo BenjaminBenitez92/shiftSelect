@@ -41,7 +41,7 @@ function ProductItem(item) {
 
   return (
     <div className="card px-1 py-1">
-      <Link to={`/shifts/${_id}`}>
+      <Link to={`/shift/${_id}`}>
         <p>{name}</p>
 
       </Link>

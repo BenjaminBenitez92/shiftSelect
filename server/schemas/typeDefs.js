@@ -12,6 +12,7 @@ const typeDefs = gql`
     description: String
     hours: Float
     shiftDate: String
+    quantity: Int
     hospital: Hospital
   }
 

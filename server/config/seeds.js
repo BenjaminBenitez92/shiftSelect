@@ -111,17 +111,17 @@ db.once('open', async () => {
   ]);
   console.log('Shifts seeded');
   await User.deleteMany();
-  await User.create({
-    firstName: 'Pamela',
-    lastName: 'Washington',
-    email: 'pamela@testmail.com',
-    password: 'password12345',
-    schedules: [
-      {
-        shifts: [shifts[0]._id, shifts[0]._id, shifts[1]._id]
-      }
-    ]
-  });
+  // await User.create({
+  //   firstName: 'Pamela',
+  //   lastName: 'Washington',
+  //   email: 'pamela@testmail.com',
+  //   password: 'password12345',
+  //   schedules: [
+  //     {
+  //       shifts: [shifts[0]._id, shifts[0]._id, shifts[1]._id]
+  //     }
+  //   ]
+  // });
   await User.create({
     firstName: 'Elijah',
     lastName: 'Holt',

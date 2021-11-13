@@ -24,27 +24,27 @@ function Nav() {
     } else {
       return (
         <ul className="flex-row">
-          <li className="mx-1">
+          <p className="mx-1">
             <Link to="/signup">
               Signup
             </Link>
-          </li>
-          <li className="mx-1">
+          </p>
+          <p className="mx-1">
             <Link to="/login">
               Login
             </Link>
-          </li>
+          </p>
         </ul>
       );
     }
   }
 
   return (
-    <header className="flex-row px-1">
+    <header className="flex-row px-1" >
       <h1>
         <Link to="/">
-          <span role="img" aria-label="shopping bag">🛍️</span>
-          -Shop-Shop
+          <span role="img" aria-label="shopping bag"></span>
+          Shift Selecter
         </Link>
       </h1>
 
